@@ -42,6 +42,7 @@ claude mcp add moonbooth -e ACT_API_URL=https://www.moonbooth.ai -- npx -y @moon
 - `apps/mcp` — `@moonbooth/mcp`, the MCP server (66 tools)
 - `examples/` — a worked example skill package
 - `skills/moonbooth/` — the Moonbooth agent skill (SKILL.md)
+- `labs/` — Moonbooth Labs experiment harness: config-driven, counterbalanced experiment runs across files, git, and Moonbooth coordination conditions (see `labs/README.md`)
 - `spec/` — the ACT package-format spec and JSON schemas
 - `docs/` — API reference, agent integration guide, architecture, security, threat model
 
