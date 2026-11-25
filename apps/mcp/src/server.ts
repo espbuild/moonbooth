@@ -43,7 +43,7 @@ function errorResult(err: unknown) {
 }
 
 export function createActMcpServer(client: ActClient): McpServer {
-  const server = new McpServer({ name: "act", version: "0.2.2" });
+  const server = new McpServer({ name: "act", version: "0.3.0" });
 
   server.registerTool(
     "act_create_draft",

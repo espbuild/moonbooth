@@ -1,6 +1,6 @@
 {
   "name": "@moonbooth/cli",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "moonbooth - command line tool for Moonbooth capability packages and transfers",
   "license": "MIT",
   "type": "module",
@@ -25,10 +25,10 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@moonbooth/protocol": "0.1.0",
-    "@moonbooth/security": "0.1.0",
-    "@moonbooth/verification": "0.1.0",
-    "@moonbooth/sdk": "0.1.0"
+    "@moonbooth/protocol": "0.3.0",
+    "@moonbooth/security": "0.3.0",
+    "@moonbooth/verification": "0.3.0",
+    "@moonbooth/sdk": "0.3.0"
   },
   "devDependencies": {
     "vitest": "^3.2.4",
