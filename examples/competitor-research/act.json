@@ -1,0 +1,29 @@
+{
+  "act_version": "0.1",
+  "artifact": {
+    "digest": "a337beddffef4bc841ec64c193069cb839b41b7a6a7d2972051b6960cb7646e9",
+    "entrypoint": "SKILL.md",
+    "format": "agent-skills"
+  },
+  "capability": {
+    "description": "Research a set of competitors and write a structured report that separates claims from evidence, compares features and segments, states positioning, and names missing information.",
+    "id": "competitor-research",
+    "name": "Competitor Research",
+    "version": "1.0.0"
+  },
+  "requested_permissions": {
+    "external_side_effects": false,
+    "filesystem_write": false,
+    "network": true
+  },
+  "requirements": {
+    "configuration": [],
+    "tools": [
+      "web-search",
+      "web-fetch"
+    ]
+  },
+  "verification": {
+    "test_manifest": "tests/manifest.json"
+  }
+}

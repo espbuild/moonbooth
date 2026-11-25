@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://act-protocol.example/spec/0.1/act-manifest.schema.json",
+  "title": "ACT Manifest",
+  "description": "The act.json file that sits beside a SKILL.md in an ACT package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "act_version",
+    "capability",
+    "artifact",
+    "requirements",
+    "requested_permissions",
+    "verification"
+  ],
+  "properties": {
+    "act_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "ACT protocol version this manifest targets."
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "version",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Stable slug that identifies the capability."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "description": "Semantic version of the capability."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "entrypoint",
+        "digest"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "agent-skills"
+        },
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Package-relative POSIX path of the entrypoint file, normally SKILL.md."
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Lowercase hex SHA-256 package digest. See spec section 6."
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tools",
+        "configuration"
+      ],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "uniqueItems": true
+        },
+        "configuration": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "requested_permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "filesystem_write",
+        "external_side_effects"
+      ],
+      "properties": {
+        "network": {
+          "type": "boolean"
+        },
+        "filesystem_write": {
+          "type": "boolean"
+        },
+        "external_side_effects": {
+          "type": "boolean"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_manifest"
+      ],
+      "properties": {
+        "test_manifest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Package-relative POSIX path of the test manifest file."
+        }
+      }
+    }
+  }
+}

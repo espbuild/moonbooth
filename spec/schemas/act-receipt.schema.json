@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://act-protocol.example/spec/0.1/act-receipt.schema.json",
+  "title": "ACT Verification Receipt",
+  "description": "Record of one verification run against one transferred package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_version",
+    "transfer_id",
+    "capability",
+    "artifact_digest",
+    "timestamp",
+    "environment",
+    "structural_result",
+    "security_result",
+    "compatibility_result",
+    "behavioral_outcomes",
+    "test_suite",
+    "evidence_references",
+    "baseline_comparison",
+    "missing_checks",
+    "unsupported_checks",
+    "human_approval_status",
+    "adoption_status"
+  ],
+  "properties": {
+    "receipt_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "transfer_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+        }
+      }
+    },
+    "artifact_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_id"
+      ],
+      "properties": {
+        "adapter_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "structural_result": {
+      "type": "string",
+      "enum": [
+        "VALIDATED",
+        "POLICY_CHECKS_PASSED",
+        "TESTED",
+        "VERIFIED_FOR_TEST_SUITE",
+        "INSUFFICIENT_EVIDENCE",
+        "FAILED",
+        "NOT_TESTED"
+      ]
+    },
+    "security_result": {
+      "type": "string",
+      "enum": [
+        "VALIDATED",
+        "POLICY_CHECKS_PASSED",
+        "TESTED",
+        "VERIFIED_FOR_TEST_SUITE",
+        "INSUFFICIENT_EVIDENCE",
+        "FAILED",
+        "NOT_TESTED"
+      ]
+    },
+    "compatibility_result": {
+      "type": "string",
+      "enum": [
+        "VALIDATED",
+        "POLICY_CHECKS_PASSED",
+        "TESTED",
+        "VERIFIED_FOR_TEST_SUITE",
+        "INSUFFICIENT_EVIDENCE",
+        "FAILED",
+        "NOT_TESTED"
+      ]
+    },
+    "behavioral_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "test_id",
+          "result"
+        ],
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "VALIDATED",
+              "POLICY_CHECKS_PASSED",
+              "TESTED",
+              "VERIFIED_FOR_TEST_SUITE",
+              "INSUFFICIENT_EVIDENCE",
+              "FAILED",
+              "NOT_TESTED"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      }
+    },
+    "test_suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+        }
+      }
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      }
+    },
+    "baseline_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "performed"
+      ],
+      "properties": {
+        "performed": {
+          "type": "boolean"
+        },
+        "result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "VALIDATED",
+            "POLICY_CHECKS_PASSED",
+            "TESTED",
+            "VERIFIED_FOR_TEST_SUITE",
+            "INSUFFICIENT_EVIDENCE",
+            "FAILED",
+            "NOT_TESTED",
+            null
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "missing_checks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "unsupported_checks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "human_approval_status": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED",
+        "PENDING",
+        "NOT_REQUIRED"
+      ]
+    },
+    "adoption_status": {
+      "type": "string",
+      "enum": [
+        "ADOPTED",
+        "NOT_ADOPTED",
+        "PENDING"
+      ]
+    }
+  }
+}

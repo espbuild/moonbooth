@@ -1,0 +1,420 @@
+{
+  "version": "0.1",
+  "notes": "Each case names an input and the expected outcome. Package cases with digest_mode \"compute\" have the runner compute the correct digest for the given files before validating, so the expected error is the named one and not a digest mismatch. A file entry with contentRepeat expands to char repeated count times.",
+  "cases": [
+    {
+      "id": "valid-manifest",
+      "kind": "manifest",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        }
+      },
+      "expected": {
+        "ok": true
+      }
+    },
+    {
+      "id": "manifest-unknown-field",
+      "kind": "manifest",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          },
+          "surprise_field": true
+        }
+      },
+      "expected": {
+        "ok": false,
+        "code": "UNKNOWN_FIELD"
+      }
+    },
+    {
+      "id": "manifest-missing-required-field",
+      "kind": "manifest",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          }
+        }
+      },
+      "expected": {
+        "ok": false,
+        "code": "MISSING_FIELD"
+      }
+    },
+    {
+      "id": "manifest-bad-semver",
+      "kind": "manifest",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        }
+      },
+      "expected": {
+        "ok": false,
+        "code": "SCHEMA_VALIDATION"
+      }
+    },
+    {
+      "id": "manifest-unsupported-act-version",
+      "kind": "manifest",
+      "input": {
+        "manifest": {
+          "act_version": "0.2",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        }
+      },
+      "expected": {
+        "ok": false,
+        "code": "UNSUPPORTED_ACT_VERSION"
+      }
+    },
+    {
+      "id": "package-tampered-digest",
+      "kind": "package",
+      "digest_mode": "fixed",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        },
+        "files": [
+          {
+            "path": "SKILL.md",
+            "content": "# Sample\n\nDo the sample task.\n"
+          },
+          {
+            "path": "tests/manifest.json",
+            "content": "{\"suite_id\":\"sample\",\"version\":\"1.0.0\"}\n"
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "code": "DIGEST_MISMATCH"
+      }
+    },
+    {
+      "id": "package-script-file",
+      "kind": "package",
+      "digest_mode": "compute",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        },
+        "files": [
+          {
+            "path": "SKILL.md",
+            "content": "# Sample\n\nDo the sample task.\n"
+          },
+          {
+            "path": "tests/manifest.json",
+            "content": "{\"suite_id\":\"sample\",\"version\":\"1.0.0\"}\n"
+          },
+          {
+            "path": "run.sh",
+            "content": "#!/bin/sh\necho hi\n"
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "code": "DISALLOWED_FILE_TYPE"
+      }
+    },
+    {
+      "id": "package-path-traversal",
+      "kind": "package",
+      "digest_mode": "compute",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        },
+        "files": [
+          {
+            "path": "SKILL.md",
+            "content": "# Sample\n\nDo the sample task.\n"
+          },
+          {
+            "path": "tests/manifest.json",
+            "content": "{\"suite_id\":\"sample\",\"version\":\"1.0.0\"}\n"
+          },
+          {
+            "path": "../evil.md",
+            "content": "evil\n"
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "code": "PATH_TRAVERSAL"
+      }
+    },
+    {
+      "id": "package-over-size-limit",
+      "kind": "package",
+      "digest_mode": "compute",
+      "input": {
+        "manifest": {
+          "act_version": "0.1",
+          "capability": {
+            "id": "sample-capability",
+            "name": "Sample Capability",
+            "version": "1.0.0",
+            "description": "A sample capability used by conformance fixtures."
+          },
+          "artifact": {
+            "format": "agent-skills",
+            "entrypoint": "SKILL.md",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "requirements": {
+            "tools": [],
+            "configuration": []
+          },
+          "requested_permissions": {
+            "network": false,
+            "filesystem_write": false,
+            "external_side_effects": false
+          },
+          "verification": {
+            "test_manifest": "tests/manifest.json"
+          }
+        },
+        "files": [
+          {
+            "path": "SKILL.md",
+            "content": "# Sample\n\nDo the sample task.\n"
+          },
+          {
+            "path": "tests/manifest.json",
+            "content": "{\"suite_id\":\"sample\",\"version\":\"1.0.0\"}\n"
+          },
+          {
+            "path": "big.md",
+            "contentRepeat": {
+              "char": "a",
+              "count": 300000
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "code": "FILE_TOO_LARGE"
+      }
+    },
+    {
+      "id": "valid-transition-sequence",
+      "kind": "transition",
+      "input": {
+        "dimension": "lifecycle",
+        "initial": "DRAFT",
+        "steps": [
+          "AWAITING_SENDER_APPROVAL",
+          "OFFERED",
+          "RECEIVED",
+          "INSPECTED",
+          "ACCEPTED"
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "final": "ACCEPTED"
+      }
+    },
+    {
+      "id": "illegal-transition",
+      "kind": "transition",
+      "input": {
+        "dimension": "lifecycle",
+        "initial": "DRAFT",
+        "steps": [
+          "ACCEPTED"
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "code": "ILLEGAL_TRANSITION"
+      }
+    }
+  ]
+}

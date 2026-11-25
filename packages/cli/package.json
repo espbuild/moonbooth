@@ -1,0 +1,37 @@
+{
+  "name": "@moonbooth/cli",
+  "version": "0.1.0",
+  "description": "moonbooth - command line tool for Moonbooth capability packages and transfers",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "moonbooth": "dist/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @moonbooth/protocol --workspace @moonbooth/security --workspace @moonbooth/verification --workspace @moonbooth/sdk && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@moonbooth/protocol": "0.1.0",
+    "@moonbooth/security": "0.1.0",
+    "@moonbooth/verification": "0.1.0",
+    "@moonbooth/sdk": "0.1.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "@types/node": "^22.10.0"
+  }
+}
