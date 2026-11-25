@@ -1,6 +1,6 @@
 {
   "name": "@moonbooth/protocol",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "ACT 0.1 package format library: manifest schema, package build and validation, digests, transfer state machine",
   "license": "MIT",
   "type": "module",

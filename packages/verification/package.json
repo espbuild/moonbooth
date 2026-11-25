@@ -1,6 +1,6 @@
 {
   "name": "@moonbooth/verification",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Moonbooth verification library: structural, compatibility and behavioral checks, receipts",
   "license": "MIT",
   "type": "module",
@@ -23,8 +23,8 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@moonbooth/protocol": "0.1.0",
-    "@moonbooth/security": "0.1.0"
+    "@moonbooth/protocol": "0.3.0",
+    "@moonbooth/security": "0.3.0"
   },
   "devDependencies": {
     "vitest": "^3.2.4",
