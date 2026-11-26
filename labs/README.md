@@ -79,6 +79,7 @@ labs run <scenario.json> [--condition files|git|moonbooth]
      [--adapter stub|codex|api-session] [--seed N]
      [--budget-cap SECONDS] [--runs-dir DIR]
      [--interventions FILE] [--dry-run]
+labs run-game <game-scenario.json> [--seed N] [--runs-dir DIR]
 labs export <run-dir> [--out FILE] [--rebuild --scenario <scenario.json>]
 ```
 
@@ -93,6 +94,53 @@ labs export <run-dir> [--out FILE] [--rebuild --scenario <scenario.json>]
   (Dropping an `interventions.json` into the run directory works too.)
 - `labs export` verifies the run's sanitized export; `--rebuild`
   regenerates it from the manifest and event log.
+
+## The MB-09 telephone game
+
+`scenarios/mb-09-agent-telephone-game.json` is the first gamebook
+game adopted into the harness: the canon scenario from
+`docs/gamebook/mb-09-telephone.json` in the private espetey/act repo
+(the gamebook spec is `docs/gamebook.md` there), carried over
+unchanged in content — game block, seed requirements, and version
+1.0.0 preserved. A chain of five seats hands a 12-requirement spec
+along; each seat restates it from the previous seat's handoff only.
+The conditions are handoff channels, not workspaces: **transcript**
+(one shared document, gamebook arm B), **moonbooth** (structured
+requirement entries on a booth record, arm C), and
+**moonbooth-ablated** (the booth with structured entries removed —
+free-text event handoffs only, arm D). The deterministic drift
+scorer (`src/games/scorer.ts`) scores every seat's restatement
+against the hidden seed: per requirement 1 intact / 0.5 altered /
+0 absent-or-contradicted, producing a fidelity curve per run.
+
+Game scenarios are a sibling format, not the build format above:
+the base schema cannot carry them (its condition enum, role
+`area`, variant `fixture`, and `additionalProperties: false` all
+reject a game document), so games validate against the game schema
+in `src/games/schema.ts` and run on the chain runner in
+`src/games/telephone.ts` via `labs run-game`. `labs validate`
+routes a document to the game schema when it carries a `game`
+block. Two gaps are recorded, not papered over: the scenario's
+checks name shell commands (`node scorers/telephone-drift.mjs …`)
+written for a merged-workspace evaluation the chain runner does not
+produce, so the runner evaluates the same check definitions
+in-process with the shared scorer — and `scorers/telephone-drift.mjs`
+exposes that scorer over any game run directory for manual use.
+Game runs support the stub adapter only, and the moonbooth game
+conditions run against a local record double, never the production
+service.
+
+The stub dry run (gamebook canon requirement 3) has been run for
+all three stub variants across all three conditions; the record is
+`scenarios/mb-09-agent-telephone-game.dry-run.json`. Faithful-chain
+holds fidelity 1.0 at every position and truncation ends at 6/12,
+both as the scenario states. Negation-loss ends at **10.5/12**, not
+the 11.5/12 its variant description states: the description's
+arithmetic contradicts the scenario's own scoring definition (a
+dropped requirement scores 0, an altered one 0.5; 10 + 0 + 0.5 =
+10.5). The miss is recorded as a finding in the dry-run record; the
+canon fix belongs to the scenario in espetey/act. With the dry run
+done, MB-09 meets all four gamebook canon requirements.
 
 ## Scenario format
 
@@ -164,13 +212,20 @@ These bind every artifact the harness produces:
 
 - `src/` — config schema and loading, the run engine, conditions,
   adapters, checks, manifest and export builders, the CLI.
-- `scenarios/` — scenario configurations (MB-01 ships here).
+  `src/games/` holds the gamebook game support: game types and
+  schema, the telephone chain runner and its handoff channels, and
+  the drift scorer.
+- `scenarios/` — scenario configurations (MB-01 ships here, plus
+  the MB-09 game scenario and its dry-run record).
+- `scorers/` — standalone scorer commands a scenario's checks can
+  name (`telephone-drift.mjs` scores a game run directory).
 - `fixtures/` — self-contained synthetic task fixtures.
 - `tests/` — unit tests (validation, counterbalancing, channel
   semantics, adapter refusal paths, manifest completeness, export
-  redaction) and an end-to-end dry run of MB-01 across all three
-  conditions, with the moonbooth condition exercised against a local
-  API double (`tests/helpers/booth-double.ts`).
+  redaction), an end-to-end dry run of MB-01 across all three
+  conditions with the moonbooth condition exercised against a local
+  API double (`tests/helpers/booth-double.ts`), and the MB-09
+  scorer, channel, and dry-run tests.
 
 ## Known limitations of this increment
 
@@ -182,3 +237,7 @@ These bind every artifact the harness produces:
 - The end-to-end verification in this increment uses the stub adapter
   and a local booth API double; no live-service or real-model run has
   been performed with this harness yet.
+- Game runs (MB-09) execute on the chain runner with the stub
+  adapter only; real adapters playing game seats, and the moonbooth
+  game conditions running against a live booth instead of the local
+  record double, are future work.

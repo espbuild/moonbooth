@@ -1,0 +1,302 @@
+{
+  "kind": "stub-dry-run",
+  "label": "Stub dry run for gamebook canon requirement 3 (a stub-adapter run proving the game runs end to end at zero model cost). Scripted outcomes are labeled expectations, never results.",
+  "game": {
+    "id": "MB-09",
+    "slug": "agent-telephone-game",
+    "scenarioVersion": "1.0.0",
+    "scenarioFile": "scenarios/mb-09-agent-telephone-game.json",
+    "registryExperiment": "MB-09",
+    "canonSpec": "docs/gamebook.md (espetey/act)"
+  },
+  "runtime": {
+    "adapter": "stub",
+    "model": "stub-scripted"
+  },
+  "budget": {
+    "maxCostUsdPerRun": null,
+    "maxInterventionsPerRun": 0,
+    "maxWallTimeSecondsPerRun": 900
+  },
+  "seed": 1,
+  "runs": [
+    {
+      "runId": "MB-09-faithful-chain-transcript-s1-p0",
+      "variant": "faithful-chain",
+      "condition": "transcript",
+      "conditionLetter": "B",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "endFidelity": 1,
+      "endSum": "12/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "fidelity-all-positions",
+          "stated": "fidelity 1.0 at all five positions",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "probe-answer",
+          "stated": "a correct probe answer",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-faithful-chain-moonbooth-s1-p1",
+      "variant": "faithful-chain",
+      "condition": "moonbooth",
+      "conditionLetter": "C",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "endFidelity": 1,
+      "endSum": "12/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "fidelity-all-positions",
+          "stated": "fidelity 1.0 at all five positions",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "probe-answer",
+          "stated": "a correct probe answer",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-faithful-chain-moonbooth-ablated-s1-p2",
+      "variant": "faithful-chain",
+      "condition": "moonbooth-ablated",
+      "conditionLetter": "D",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "endFidelity": 1,
+      "endSum": "12/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "fidelity-all-positions",
+          "stated": "fidelity 1.0 at all five positions",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "probe-answer",
+          "stated": "a correct probe answer",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-negation-loss-transcript-s1-p3",
+      "variant": "negation-loss",
+      "condition": "transcript",
+      "conditionLetter": "B",
+      "fidelityCurve": [
+        1,
+        1,
+        0.9167,
+        0.875,
+        0.875
+      ],
+      "endFidelity": 0.875,
+      "endSum": "10.5/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)",
+          "actual": "end-of-chain fidelity 10.5/12",
+          "verdict": "miss",
+          "note": "The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12."
+        },
+        {
+          "id": "loss-enters-at-position-3",
+          "stated": "the loss entering the curve at position 3",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-negation-loss-moonbooth-s1-p4",
+      "variant": "negation-loss",
+      "condition": "moonbooth",
+      "conditionLetter": "C",
+      "fidelityCurve": [
+        1,
+        1,
+        0.9167,
+        0.875,
+        0.875
+      ],
+      "endFidelity": 0.875,
+      "endSum": "10.5/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)",
+          "actual": "end-of-chain fidelity 10.5/12",
+          "verdict": "miss",
+          "note": "The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12."
+        },
+        {
+          "id": "loss-enters-at-position-3",
+          "stated": "the loss entering the curve at position 3",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-negation-loss-moonbooth-ablated-s1-p5",
+      "variant": "negation-loss",
+      "condition": "moonbooth-ablated",
+      "conditionLetter": "D",
+      "fidelityCurve": [
+        1,
+        1,
+        0.9167,
+        0.875,
+        0.875
+      ],
+      "endFidelity": 0.875,
+      "endSum": "10.5/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)",
+          "actual": "end-of-chain fidelity 10.5/12",
+          "verdict": "miss",
+          "note": "The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12."
+        },
+        {
+          "id": "loss-enters-at-position-3",
+          "stated": "the loss entering the curve at position 3",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-truncation-transcript-s1-p6",
+      "variant": "truncation",
+      "condition": "transcript",
+      "conditionLetter": "B",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        0.5,
+        0.5
+      ],
+      "endFidelity": 0.5,
+      "endSum": "6/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity at most 6/12",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "loss-enters-at-position-4",
+          "stated": "entering the curve at position 4",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-truncation-moonbooth-s1-p7",
+      "variant": "truncation",
+      "condition": "moonbooth",
+      "conditionLetter": "C",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        0.5,
+        0.5
+      ],
+      "endFidelity": 0.5,
+      "endSum": "6/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity at most 6/12",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "loss-enters-at-position-4",
+          "stated": "entering the curve at position 4",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    },
+    {
+      "runId": "MB-09-truncation-moonbooth-ablated-s1-p8",
+      "variant": "truncation",
+      "condition": "moonbooth-ablated",
+      "conditionLetter": "D",
+      "fidelityCurve": [
+        1,
+        1,
+        1,
+        0.5,
+        0.5
+      ],
+      "endFidelity": 0.5,
+      "endSum": "6/12",
+      "probeCorrect": true,
+      "expectations": [
+        {
+          "id": "end-of-chain-fidelity",
+          "stated": "end-of-chain fidelity at most 6/12",
+          "actual": "as stated",
+          "verdict": "pass"
+        },
+        {
+          "id": "loss-enters-at-position-4",
+          "stated": "entering the curve at position 4",
+          "actual": "as stated",
+          "verdict": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "negation-loss (transcript): stated \"end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)\", observed end-of-chain fidelity 10.5/12. The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12.",
+    "negation-loss (moonbooth): stated \"end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)\", observed end-of-chain fidelity 10.5/12. The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12.",
+    "negation-loss (moonbooth-ablated): stated \"end-of-chain fidelity 11.5/12 (R10 scores 0, R4 scores 0.5)\", observed end-of-chain fidelity 10.5/12. The stated 11.5/12 does not follow from the scenario's own scoring definition: an absent requirement scores 0 and an altered one 0.5, so ten intact requirements plus R10 dropped (0) plus R4 altered (0.5) sum to 10.5/12. The scorer implements the definition as written; the defect is the variant description's arithmetic. Canon fix, in espetey/act: the negation-loss description should read 10.5/12."
+  ]
+}

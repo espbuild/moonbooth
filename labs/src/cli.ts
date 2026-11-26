@@ -1,8 +1,14 @@
 #!/usr/bin/env node
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { loadScenario, ScenarioValidationError } from "./config.js";
+import {
+  isGameScenarioDocument,
+  loadGameScenario,
+  loadScenario,
+  ScenarioValidationError,
+} from "./config.js";
 import { LABS_ROOT, harnessVersion, runScenario } from "./engine.js";
+import { buildDryRunSummary, runGame } from "./games/telephone.js";
 import { assertExportSafe, buildExport, type RunManifest } from "./manifest.js";
 import type { HarnessEvent } from "./types.js";
 
@@ -14,6 +20,10 @@ import type { HarnessEvent } from "./types.js";
 //        [--budget-cap SECONDS] [--runs-dir DIR]
 //        [--interventions FILE] [--dry-run]
 //   labs export <run-dir> [--out FILE]
+//   labs run-game <game-scenario.json> [--seed N] [--runs-dir DIR]
+//
+// run-game runs a gamebook game scenario (games/telephone.ts) with
+// the stub adapter: the canon-requirement-3 dry run.
 //
 // --dry-run forces the stub adapter across every condition in the
 // scenario: the full pipeline at zero model cost. A run's outcome
@@ -31,6 +41,17 @@ function hasFlag(args: string[], name: string): boolean {
 
 async function cmdValidate(scenarioPath: string): Promise<number> {
   try {
+    const raw = JSON.parse(await readFile(scenarioPath, "utf8")) as unknown;
+    if (isGameScenarioDocument(raw)) {
+      const scenario = await loadGameScenario(scenarioPath);
+      console.log(
+        `Valid game: ${scenario.id} (${scenario.slug}) v${scenario.version} — ` +
+          `${scenario.variants.length} variant(s), ${scenario.conditions.length} condition(s), ` +
+          `${scenario.game.players.count} seat(s), ${scenario.seedRequirements.length} seed requirement(s), ` +
+          `${scenario.checks.length} check(s), ${scenario.injections.length} injection(s).`,
+      );
+      return 0;
+    }
     const scenario = await loadScenario(scenarioPath);
     console.log(
       `Valid: ${scenario.id} (${scenario.slug}) v${scenario.version} — ` +
@@ -45,6 +66,40 @@ async function cmdValidate(scenarioPath: string): Promise<number> {
     }
     throw err;
   }
+}
+
+async function cmdRunGame(scenarioPath: string, args: string[]): Promise<number> {
+  const scenario = await loadGameScenario(scenarioPath);
+  const seedRaw = flagValue(args, "--seed");
+  const seed = seedRaw !== undefined ? (Number.isNaN(Number(seedRaw)) ? seedRaw : Number(seedRaw)) : 1;
+  const runsDir = path.resolve(
+    flagValue(args, "--runs-dir") ?? path.join(LABS_ROOT, "runs"),
+  );
+  const outcomes = await runGame(scenario, { runsDir, seed });
+  for (const outcome of outcomes) {
+    const m = outcome.manifest;
+    const missed = m.expectations.filter((e) => e.verdict === "miss");
+    console.log(
+      `${m.runId}: end fidelity ${m.fidelity.endSum} (${m.fidelity.endFidelity}), ` +
+        `curve ${m.fidelity.curve.join(", ")}, probe ${m.probe.correct ? "correct" : "incorrect"}, ` +
+        `expectations ${m.expectations.length - missed.length}/${m.expectations.length} met`,
+    );
+    for (const exp of missed) {
+      console.log(`  EXPECTATION MISS [${exp.id}]: stated "${exp.stated}", observed ${exp.actual}`);
+    }
+    console.log(`  manifest: ${path.join(outcome.runDir, "manifest.json")}`);
+  }
+  const summary = buildDryRunSummary(scenario, outcomes, seed);
+  const summaryPath = path.join(runsDir, scenario.id, "dry-run-summary.json");
+  await mkdir(path.dirname(summaryPath), { recursive: true });
+  await writeFile(summaryPath, JSON.stringify(summary, null, 2) + "\n", "utf8");
+  console.log(`summary: ${summaryPath}`);
+  if (summary.findings.length > 0) {
+    console.log(
+      "findings: an expectation miss is a finding about the scenario (see the summary's findings); per the scenario's stop rule, do not schedule further runs of this variant until it is resolved.",
+    );
+  }
+  return 0;
 }
 
 async function cmdRun(scenarioPath: string, args: string[]): Promise<number> {
@@ -152,14 +207,18 @@ async function main(): Promise<number> {
     case "run":
       if (!target) throw new Error("Usage: labs run <scenario.json> [flags]");
       return cmdRun(path.resolve(target), rest);
+    case "run-game":
+      if (!target) throw new Error("Usage: labs run-game <game-scenario.json> [flags]");
+      return cmdRunGame(path.resolve(target), rest);
     case "export":
       if (!target) throw new Error("Usage: labs export <run-dir> [--out FILE]");
       return cmdExport(target, rest);
     default:
       console.error(
-        "Usage: labs <validate|run|export> ...\n" +
+        "Usage: labs <validate|run|run-game|export> ...\n" +
           "  labs validate <scenario.json>\n" +
           "  labs run <scenario.json> [--condition C] [--adapter A] [--seed N] [--budget-cap S] [--runs-dir D] [--interventions F] [--dry-run]\n" +
+          "  labs run-game <game-scenario.json> [--seed N] [--runs-dir D]\n" +
           "  labs export <run-dir> [--out FILE] [--scenario <scenario.json>]",
       );
       return 1;

@@ -181,7 +181,7 @@ export const SCENARIO_SCHEMA = {
   },
 } as const;
 
-type SchemaNode = {
+export type SchemaNode = {
   type?: string | string[];
   required?: readonly string[];
   properties?: Record<string, SchemaNode>;
@@ -197,7 +197,7 @@ function typeOf(value: unknown): string {
   return typeof value;
 }
 
-function validateNode(
+export function validateNode(
   value: unknown,
   schema: SchemaNode,
   path: string,
